@@ -7,7 +7,7 @@ required_modules = ["requests"]
 
 setuptools.setup(
     name='serverjars-api',
-    version='1.0.0',
+    version='1.0.1',
     author='Legopitstop',
     description='The unofficial Python API for ServerJars',
     long_description=long_description,

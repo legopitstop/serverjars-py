@@ -1,4 +1,4 @@
-from constants import Category, Type, Stability
+from .constants import Category, Type, Stability
 import requests
 import os
 
@@ -113,19 +113,12 @@ def fetchAll(category:Category, max:int=''):
 
 def fetchTypes(type:Type=''):
     """Fetch a list of the possible jar types."""
-    return sendRequest(f'fetchTypes/{type}')[str(type)]
+    res = sendRequest(f'fetchTypes/{type}')
+    if type=='': return res
+    else: return res[str(type)]
 
 def fetchDetails(category:Category, version:str=''):
     """Fetch the details of a single jar."""
     type = _type(category)
     res = sendRequest(f'fetchDetails/{type}/{category}/{version}')
     return Jar().from_json(res)
-
-if __name__ == '__main__':
-    LOCAL = os.path.dirname(os.path.realpath(__file__))
-    # download = downloadJar(Category.vanilla)
-    latest = fetchLatest(Category.paper)
-    # all = fetchAll(Category.paper, 5)
-    # types = fetchTypes(Type.bedrock)
-    # details = fetchDetails(Category.paper)
-    print(latest)

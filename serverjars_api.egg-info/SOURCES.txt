@@ -1,0 +1,11 @@
+LICENSE.md
+README.md
+setup.cfg
+setup.py
+ServerJars/__init__.py
+ServerJars/constants.py
+serverjars_api.egg-info/PKG-INFO
+serverjars_api.egg-info/SOURCES.txt
+serverjars_api.egg-info/dependency_links.txt
+serverjars_api.egg-info/requires.txt
+serverjars_api.egg-info/top_level.txt
