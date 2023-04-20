@@ -1,46 +1,33 @@
-from enum import Enum
 
-class Category(Enum):
-    # bedrock
-    nukkitx='nukkitx'
-    pocketmine='pocketmine'
-    # modded
-    mohist='mohist'
-    forge='forge'
-    catserver='catserver'
-    fabric='fabric'
-    # proxies
-    bungeecord='bungeecord'
-    velocity='velocity'
-    waterfall='waterfall'
-    flamecord='flamecord'
-    # servers
-    bukkit='bukkit'
-    paper='paper'
-    spigot='spigot'
-    purpur='purpur'
-    tuinity='tuinity'
-    sponge='sponge'
-    # vanilla
-    snapshot='snapshot'
-    vanilla='vanilla'
+# Category
+NUKKITX='nukkitx'
+POCKETMINE='pocketmine'
+MOHIST='mohist'
+FORGE='forge'
+CATSERVER='catserver'
+FABRIC='fabric'
+BUNGEECORD='bungeecord'
+VELOCITY='velocity'
+WATERFALL='waterfall'
+FLAMECORD='flamecord'
+BUKKIT='bukkit'
+PAPER='paper'
+SPIGOT='spigot'
+PURPUR='purpur'
+TUINITY='tuinity'
+SPONGE='sponge'
+SNAPSHOT='snapshot'
+VANILLA='vanilla'
 
-    def __str__(self):
-        return super().__str__().replace('Category.', '')
+# type
+BEDROCK='bedrock'
+MODDED='modded'
+PROXIES='proxies'
+SERVERS='servers'
 
-class Type(Enum):
-    bedrock='bedrock'
-    modded='modded'
-    proxies='proxies'
-    servers='servers'
-    vanilla='vanilla'
-
-    def __str__(self):
-        return super().__str__().replace('Type.', '')
-
-class Stability(Enum):
-    stable = 'stable'
-    experimental = 'experimental'
-
-    def __str__(self):
-        return super().__str__().replace('Stability.', '')
+# Stability
+STABLE = 'stable'
+EXPERIMENTAL = 'experimental'
+UNSTABLE = 'unstable'
+TESTING = 'testing'
+SNAPSHOT = 'snapshot'

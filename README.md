@@ -1,45 +1,41 @@
-# ServerJars-API
-The unofficial Python API for ServerJars
+# serverjars
+The unofficial Python wrapper for [serverjars.com](https://serverjars.com/)
 
-**Code Examples:**
-
-**Fetching the latest jar:**
+## Code Examples:
+Fetching the latest jar:
 ```python
-latest = ServerJars.fetchLatest(category=Category.vanilla)
+import serverjars
+latest = serverjars.fetchLatest('vanilla')
 print(latest)
 ```
 
-**Fetching all the Jars:**
+Fetching all the Jars:
 ```python
-allJars = ServerJars.fetchAll(category=Category.paper)
+import serverjars
+allJars = serverjars.fetchAll('paper')
 print(allJars)
 ```
 
-**Fetching types:**
+Fetching types:
 ```python
-types = ServerJars.fetchTypes()
+import serverjars
+types = serverjars.fetchTypes()
 print(types)
 ```
 
-**Fetching subtypes:**
+Fetching subtypes:
 ```python
-subtypes = Serverjars.fetchTypes(type=Type.bedrock)
+import serverjars
+subtypes = serverjars.fetchTypes('bedrock')
 print(subtypes)
 ```
 
-**Downloading Jars:**
+Downloading Jars:
 ```python
-download = ServerJars.downloadJar(type=Category.purpur, version='1.13.2')
-print(download)
+import serverjars
+
+def on_finish(jar):
+    print('Downloaded', jar)
+
+serverjars.downloadJar('snapshot', finishcommand=on_finish)
 ```
-
-## Jar
-
-The Jar class gets returned from most of the classes in this library.
-
-### Parameters
-- `version` - The version of the jar
-- `size` - The size of the jar.
-- `md5` - md5 of the jar
-- `built` - The timestamp of when it was releaseed.
-- `stability` - The stability of the jar

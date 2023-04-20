@@ -2,8 +2,8 @@ LICENSE.md
 README.md
 setup.cfg
 setup.py
-ServerJars/__init__.py
-ServerJars/constants.py
+serverjars/__init__.py
+serverjars/constants.py
 serverjars_api.egg-info/PKG-INFO
 serverjars_api.egg-info/SOURCES.txt
 serverjars_api.egg-info/dependency_links.txt
