@@ -7,7 +7,7 @@ required_modules = ["requests"]
 
 setuptools.setup(
     name='serverjars-api',
-    version='1.1.0',
+    version='1.2.0',
     author='Legopitstop',
     description='The unofficial Python wrapper for serverjars.com',
     long_description=long_description,
@@ -24,7 +24,7 @@ setuptools.setup(
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
         'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.11',
     ],
     python_requires='>=3.6'
 )
