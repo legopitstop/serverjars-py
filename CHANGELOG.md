@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 4/14/2024
+
+Sadly due to unforeseen circumstances, serverjars.com is down and will not be back online. Thankfully the CDN server is still up which this update introduces. Because of this, some functions may behave differently.
+
+### Changes
+- Renamed all functions to be snake_case.
+- Some methods now require "type".
+
 ## [1.2.0] - 8-27-2023
 ### General
 - renamed `file` argument to `fp` in downloadJar method.

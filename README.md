@@ -5,6 +5,7 @@
 ![Downloads](https://img.shields.io/pypi/dm/serverjars-api)
 ![Status](https://img.shields.io/pypi/status/serverjars-api)
 [![Issues](https://img.shields.io/github/issues/legopitstop/serverjars-python-api-wrapper)](https://github.com/legopitstop/serverjars-python-api-wrapper/issues)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 The unofficial Python wrapper for [serverjars.com](https://serverjars.com/)
 
@@ -19,28 +20,21 @@ Update existing installation: `pip3 install serverjars-api --upgrade`
 Fetching the latest jar:
 ```python
 import serverjars
-latest = serverjars.fetchLatest('vanilla')
+latest = serverjars.fetch_latest('vanilla', 'vanilla')
 print(latest)
 ```
 
 Fetching all the Jars:
 ```python
 import serverjars
-allJars = serverjars.fetchAll('paper')
+allJars = serverjars.fetch_all('vanilla', 'snapshot')
 print(allJars)
 ```
 
 Fetching types:
 ```python
 import serverjars
-types = serverjars.fetchTypes()
-print(types)
-```
-
-Fetching subtypes:
-```python
-import serverjars
-subtypes = serverjars.fetchTypes('bedrock')
+subtypes = serverjars.fetch_types('modded')
 print(subtypes)
 ```
 
@@ -48,8 +42,13 @@ Downloading Jars:
 ```python
 import serverjars
 
-def on_finish(jar):
-    print('Downloaded', jar)
+serverjars.download_jar('vanilla', "vanilla")
+```
 
-serverjars.downloadJar('snapshot', finishcommand=on_finish)
+Create and run a Minecraft server
+```python
+import serverjars
+
+app = serverjars.App.create('vanilla', "vanilla", fp="svr/server.jar")
+app.run()
 ```

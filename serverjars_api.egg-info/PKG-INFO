@@ -23,6 +23,7 @@ Description-Content-Type: text/markdown
 ![Downloads](https://img.shields.io/pypi/dm/serverjars-api)
 ![Status](https://img.shields.io/pypi/status/serverjars-api)
 [![Issues](https://img.shields.io/github/issues/legopitstop/serverjars-python-api-wrapper)](https://github.com/legopitstop/serverjars-python-api-wrapper/issues)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 The unofficial Python wrapper for [serverjars.com](https://serverjars.com/)
 
