@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/serverjars-api)](https://www.python.org/downloads//)
 ![Downloads](https://img.shields.io/pypi/dm/serverjars-api)
 ![Status](https://img.shields.io/pypi/status/serverjars-api)
-[![Issues](https://img.shields.io/github/issues/legopitstop/serverjars-python-api-wrapper)](https://github.com/legopitstop/serverjars-python-api-wrapper/issues)
+[![Issues](https://img.shields.io/github/issues/legopitstop/serverjars-py)](https://github.com/legopitstop/serverjars-py/issues)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 Download and fetch details about Minecraft server jars.
