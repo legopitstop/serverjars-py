@@ -1,34 +1,23 @@
-# Categories
-NUKKITX = "nukkitx"
-POCKETMINE = "pocketmine"
-MOHIST = "mohist"
-FORGE = "forge"
-CATSERVER = "catserver"
-FABRIC = "fabric"
-BUNGEECORD = "bungeecord"
-VELOCITY = "velocity"
-WATERFALL = "waterfall"
-FLAMECORD = "flamecord"
-BUKKIT = "bukkit"
-PAPER = "paper"
-SPIGOT = "spigot"
-PURPUR = "purpur"
-TUINITY = "tuinity"
-SPONGE = "sponge"
-SNAPSHOT = "snapshot"
-VANILLA = "vanilla"
-
-# Types
+# type
 BEDROCK = "bedrock"
 MODDED = "modded"
 PROXIES = "proxies"
-SERVERS = "servers"
-# vanilla
+VANILLA = "vanilla"
 
-# Stability
-STABLE = "stable"
-EXPERIMENTAL = "experimental"
-UNSTABLE = "unstable"
-TESTING = "testing"
-SNAPSHOT = "snapshot"
+# category
+BANNER = "banner"
+FABRIC = "fabric"
+MOHIST = "mohist"
 RELEASE = "release"
+SNAPSHOT = "snapshot"
+
+# POCKETMINE='pocketmine'
+# FORGE='forge'
+# BUNGEE='bungee'
+# VELOCITY='velocity'
+# WATERFALL='waterfall'
+# FOLIA='folia'
+# PAPER='paper'
+# PUFFERFISH='pufferfish'
+# PURPUR='purpur'
+# SPONGE='sponge'

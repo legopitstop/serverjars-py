@@ -2,8 +2,8 @@ import serverjars
 
 
 def test(type, category):
-    latest = serverjars.fetch_latest(type, category)
-    print(category, "-", latest.version, "-", latest.size)
+    res = serverjars.fetch_jar(type, category)
+    print(category, "-", res)
 
 
 test("vanilla", "release")

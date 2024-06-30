@@ -1,6 +1,13 @@
 import serverjars
 
-details = serverjars.fetch_details(
-    type="vanilla", category="snapshot", version="1.20.3"
-)
-print(details)
+
+def test(type, category):
+    details = serverjars.fetch_details(type=type, category=category)
+    print(category, "-", details.version, "-", details.size)
+
+
+test("vanilla", "release")
+test("vanilla", "snapshot")
+test("modded", "banner")
+test("modded", "fabric")
+test("modded", "mohist")
