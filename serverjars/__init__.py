@@ -2,7 +2,7 @@
 Download and fetch details about Minecraft server jars.
 """
 
-from typing import Any
+from typing import Any, Dict, List
 from pydantic import BaseModel
 from datetime import datetime
 import threading
@@ -53,7 +53,7 @@ class SoftwareFile(BaseModel):
     stability: str
     hash: str
     download: str
-    meta: dict[str, Any]
+    meta: Dict[str, Any]
     built: datetime
     size: SoftwareFileSize
 
@@ -68,7 +68,7 @@ class SoftwareBuilder:
             + f"(type={ repr(self.type) }, category={ repr(self.category) })"
         )
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         raise NotImplementedError()
 
     def get_version(self, version: str) -> str:
@@ -76,7 +76,7 @@ class SoftwareBuilder:
             return self.available_versions()[0]
         return version
 
-    def get_meta(self, version: str) -> dict[str, Any]:
+    def get_meta(self, version: str) -> Dict[str, Any]:
         raise NotImplementedError()
 
     def get_hash(self, version: str) -> str:
@@ -117,7 +117,7 @@ class SoftwareBuilder:
         )
 
 
-SERVICES: dict[str, list[SoftwareBuilder]] = {}
+SERVICES: Dict[str, List[SoftwareBuilder]] = {}
 
 # load services
 
@@ -177,7 +177,7 @@ def download_jar(
         t.start()
 
 
-def fetch_all_types() -> dict[str, list[str]]:
+def fetch_all_types() -> Dict[str, List[str]]:
     """
     All types and categories.
 
@@ -189,7 +189,7 @@ def fetch_all_types() -> dict[str, list[str]]:
     return res
 
 
-def fetch_all(type: str, category: str, max: int) -> list[SoftwareFile]:
+def fetch_all(type: str, category: str, max: int) -> List[SoftwareFile]:
     """
     Fetch a list of jar files.
 
@@ -276,7 +276,7 @@ def fetch_latest(type: str, category: str) -> SoftwareFile:
     return fetch_details(type, category, "latest")
 
 
-def fetch_types(type: str) -> list[str]:
+def fetch_types(type: str) -> List[str]:
     """
     Get categories for type.
 

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 from datetime import datetime
 import requests
 
@@ -37,7 +37,7 @@ class MinecraftServiceBase(SoftwareBuilder):
     release_only = True
     type = "vanilla"
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         if self.release_only:
             return list(_release_versions().keys())
         return list(_versions().keys())

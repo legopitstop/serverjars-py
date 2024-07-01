@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict, List
 from datetime import datetime
 import hashlib
 import requests
@@ -12,7 +12,7 @@ class MohistAPIService:
     def __init__(self, project: str):
         self.project = project
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         res = requests.get(f"https://mohistmc.com/api/v2/projects/{self.project}")
         if res.status_code == 200:
             data = res.json()
@@ -20,7 +20,7 @@ class MohistAPIService:
             return data["versions"]
         raise InvalidRequest(res.text)
 
-    def get_meta(self, version) -> dict[str, Any]:
+    def get_meta(self, version) -> Dict[str, Any]:
         meta = {}
         res = requests.get(
             f"https://mohistmc.com/api/v2/projects/{self.project}/{version}/builds"
@@ -47,7 +47,7 @@ class BannerService(SoftwareBuilder):
 
     api = MohistAPIService(category)
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         return self.api.available_versions()
 
     def get_meta(self, version: str) -> dict[str, Any]:
@@ -75,7 +75,7 @@ class FabricService(SoftwareBuilder):
     type = "modded"
     category = "fabric"
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         res = requests.get("https://meta.fabricmc.net/v2/versions/game")
         if res.status_code == 200:
             data = res.json()
@@ -151,7 +151,7 @@ class MohistService(SoftwareBuilder):
     category = "mohist"
     api = MohistAPIService(category)
 
-    def available_versions(self) -> list[str]:
+    def available_versions(self) -> List[str]:
         return self.api.available_versions()
 
     def get_meta(self, version: str) -> dict[str, Any]:
