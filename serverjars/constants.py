@@ -1,3 +1,15 @@
+__all__ = [
+    "BEDROCK",
+    "MODDED",
+    "PROXIES",
+    "VANILLA",
+    "BANNER",
+    "FABRIC",
+    "MOHIST",
+    "RELEASE",
+    "SNAPSHOT",
+]
+
 # type
 BEDROCK = "bedrock"
 MODDED = "modded"
