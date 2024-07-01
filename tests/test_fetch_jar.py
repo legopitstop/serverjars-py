@@ -14,4 +14,4 @@ import pytest
 )
 def test_fetch_jar(type, category):
     res = serverjars.fetch_jar(type, category)
-    assert res.status_code is 200
+    assert res.status_code == 200

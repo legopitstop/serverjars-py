@@ -1,3 +1,4 @@
+from typing import Any
 from datetime import datetime
 import requests
 
@@ -6,7 +7,7 @@ from . import register, InvalidRequest, SoftwareBuilder
 __all__ = ["get_manifest", "MinecraftServiceBase", "ReleaseService", "SnapshotService"]
 
 
-def get_manifest() -> dict:
+def get_manifest() -> dict[str, Any]:
     res = requests.get("https://launchermeta.mojang.com/mc/game/version_manifest.json")
     if res.status_code == 200:
         return res.json()
@@ -41,7 +42,7 @@ class MinecraftServiceBase(SoftwareBuilder):
             return list(_release_versions().keys())
         return list(_versions().keys())
 
-    def get_meta(self, version: str) -> dict:
+    def get_meta(self, version: str) -> dict[str, Any]:
         meta = {"hash": None, "origin": None, "stability": None, "created": None}
         if version == "latest":
             manifest_url = _versions()[get_manifest()["latest"]["release"]]
@@ -58,13 +59,13 @@ class MinecraftServiceBase(SoftwareBuilder):
             return meta
         raise InvalidRequest(res.text)
 
-    def get_hash(self, version: str) -> str | None:
+    def get_hash(self, version: str) -> str:
         return self.get_meta(version)["hash"]
 
     def get_built(self, version: str) -> datetime:
         return self.get_meta(version)["created_at"]
 
-    def get_download(self, version: str) -> str | None:
+    def get_download(self, version: str) -> str:
         return self.get_meta(version)["origin"]
 
     def get_stability(self, version: str) -> str:

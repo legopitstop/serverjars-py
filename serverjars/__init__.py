@@ -2,6 +2,7 @@
 Download and fetch details about Minecraft server jars.
 """
 
+from typing import Any
 from pydantic import BaseModel
 from datetime import datetime
 import threading
@@ -52,14 +53,14 @@ class SoftwareFile(BaseModel):
     stability: str
     hash: str
     download: str
-    meta: dict
+    meta: dict[str, Any]
     built: datetime
     size: SoftwareFileSize
 
 
 class SoftwareBuilder:
-    type: str = None
-    category: str = None
+    type: str = ""
+    category: str = ""
 
     def __str__(self) -> str:
         return (
@@ -75,13 +76,13 @@ class SoftwareBuilder:
             return self.available_versions()[0]
         return version
 
-    def get_meta(self, version: str) -> dict:
+    def get_meta(self, version: str) -> dict[str, Any]:
         raise NotImplementedError()
 
-    def get_hash(self, version: str) -> str | None:
+    def get_hash(self, version: str) -> str:
         raise NotImplementedError()
 
-    def get_download(self, version: str) -> str | None:
+    def get_download(self, version: str) -> str:
         raise NotImplementedError()
 
     def get_built(self, version: str) -> datetime:
@@ -130,7 +131,7 @@ from .vanilla import *
 # from .servers import *
 
 
-def _download(type: str, category: str, version: str, fp: str, chunk_size: int):
+def _download(type: str, category: str, version: str, fp: str, chunk_size: int) -> None:
     res = fetch_jar(type, category, version)
     dir = os.path.dirname(fp)
     if dir:
@@ -275,7 +276,7 @@ def fetch_latest(type: str, category: str) -> SoftwareFile:
     return fetch_details(type, category, "latest")
 
 
-def fetch_types(type: str) -> list:
+def fetch_types(type: str) -> list[str]:
     """
     Get categories for type.
 
