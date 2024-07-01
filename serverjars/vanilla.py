@@ -1,20 +1,21 @@
-from typing import Any, List
+from typing import Any, Dict, List
 from datetime import datetime
 import requests
 
-from . import register, InvalidRequest, SoftwareBuilder
+from .exception import InvalidRequest
+from .software import register, SoftwareBuilder
 
 __all__ = ["get_manifest", "MinecraftServiceBase", "ReleaseService", "SnapshotService"]
 
 
-def get_manifest() -> dict[str, Any]:
+def get_manifest() -> Dict[str, Any]:
     res = requests.get("https://launchermeta.mojang.com/mc/game/version_manifest.json")
     if res.status_code == 200:
         return res.json()
     raise InvalidRequest(res.text)
 
 
-def _release_versions() -> dict[str, str]:
+def _release_versions() -> Dict[str, str]:
     data = {}
     versions = [x for x in get_manifest()["versions"] if x["type"] == "release"]
     for v in versions:
@@ -22,7 +23,7 @@ def _release_versions() -> dict[str, str]:
     return data
 
 
-def _versions() -> dict[str, str]:
+def _versions() -> Dict[str, str]:
     data = {}
     for v in get_manifest()["versions"]:
         data[v["id"]] = v["url"]
@@ -42,7 +43,7 @@ class MinecraftServiceBase(SoftwareBuilder):
             return list(_release_versions().keys())
         return list(_versions().keys())
 
-    def get_meta(self, version: str) -> dict[str, Any]:
+    def get_meta(self, version: str) -> Dict[str, Any]:
         meta = {"hash": None, "origin": None, "stability": None, "created": None}
         if version == "latest":
             manifest_url = _versions()[get_manifest()["latest"]["release"]]

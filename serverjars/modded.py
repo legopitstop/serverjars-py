@@ -3,7 +3,8 @@ from datetime import datetime
 import hashlib
 import requests
 
-from . import register, InvalidRequest, SoftwareBuilder
+from .exception import InvalidRequest
+from .software import register, SoftwareBuilder
 
 __all__ = ["MohistAPIService", "BannerService", "FabricService", "MohistService"]
 
@@ -50,7 +51,7 @@ class BannerService(SoftwareBuilder):
     def available_versions(self) -> List[str]:
         return self.api.available_versions()
 
-    def get_meta(self, version: str) -> dict[str, Any]:
+    def get_meta(self, version: str) -> Dict[str, Any]:
         return self.api.get_meta(version)
 
     def get_hash(self, version: str) -> str:
@@ -82,7 +83,7 @@ class FabricService(SoftwareBuilder):
             return [x["version"] for x in data if x["stable"]]
         raise InvalidRequest(res.text)
 
-    def get_latest_installer(self) -> dict[str, Any]:
+    def get_latest_installer(self) -> Dict[str, Any]:
         res = requests.get("https://meta.fabricmc.net/v2/versions/installer")
         if res.status_code == 200:
             data = res.json()
@@ -91,7 +92,7 @@ class FabricService(SoftwareBuilder):
                     return k
         raise InvalidRequest(res.text)
 
-    def get_latest_loader(self) -> dict[str, Any]:
+    def get_latest_loader(self) -> Dict[str, Any]:
         res = requests.get("https://meta.fabricmc.net/v2/versions/loader")
         if res.status_code == 200:
             data = res.json()
@@ -100,7 +101,7 @@ class FabricService(SoftwareBuilder):
                     return k
         raise InvalidRequest(res.text)
 
-    def get_meta(self, version: str) -> dict[str, Any]:
+    def get_meta(self, version: str) -> Dict[str, Any]:
         meta = {}
         meta["installer"] = self.get_latest_installer()["version"]
         meta["loader"] = self.get_latest_loader()["version"]
@@ -154,7 +155,7 @@ class MohistService(SoftwareBuilder):
     def available_versions(self) -> List[str]:
         return self.api.available_versions()
 
-    def get_meta(self, version: str) -> dict[str, Any]:
+    def get_meta(self, version: str) -> Dict[str, Any]:
         return self.api.get_meta(version)
 
     def get_hash(self, version: str) -> str:
