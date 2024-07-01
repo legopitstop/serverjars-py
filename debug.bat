@@ -2,3 +2,4 @@
 mypy serverjars
 flake8 serverjars
 pytest
+tox
