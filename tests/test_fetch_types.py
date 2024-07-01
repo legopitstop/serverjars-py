@@ -1,8 +1,8 @@
 import serverjars
+import pytest
 
-def test(type):
+
+@pytest.mark.parametrize("type", [("vanilla"), ("modded")])
+def test_fetch_types(type):
     types = serverjars.fetch_types(type)
-    print(types)
-
-test("vanilla")
-test("modded")
+    assert isinstance(types, list)

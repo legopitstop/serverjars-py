@@ -1,13 +1,17 @@
 import serverjars
+import pytest
 
 
-def test(type, category):
+@pytest.mark.parametrize(
+    "type, category",
+    [
+        ("vanilla", "release"),
+        ("vanilla", "snapshot"),
+        ("modded", "banner"),
+        ("modded", "fabric"),
+        ("modded", "mohist"),
+    ],
+)
+def test_fetch_latest(type, category):
     latest = serverjars.fetch_latest(type, category)
-    print(category, "-", latest.version, "-", latest.size)
-
-
-test("vanilla", "release")
-test("vanilla", "snapshot")
-test("modded", "banner")
-test("modded", "fabric")
-test("modded", "mohist")
+    assert isinstance(latest, serverjars.SoftwareFile)

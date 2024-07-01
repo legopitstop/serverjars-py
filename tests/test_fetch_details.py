@@ -1,13 +1,17 @@
 import serverjars
+import pytest
 
 
-def test(type, category):
+@pytest.mark.parametrize(
+    "type, category",
+    [
+        ("vanilla", "release"),
+        ("vanilla", "snapshot"),
+        ("modded", "banner"),
+        ("modded", "fabric"),
+        ("modded", "mohist"),
+    ],
+)
+def test_fetch_details(type, category):
     details = serverjars.fetch_details(type=type, category=category)
-    print(category, "-", details.version, "-", details.size)
-
-
-test("vanilla", "release")
-test("vanilla", "snapshot")
-test("modded", "banner")
-test("modded", "fabric")
-test("modded", "mohist")
+    assert isinstance(details, serverjars.SoftwareFile)

@@ -1,13 +1,17 @@
 import serverjars
+import pytest
 
 
-def test(type, category):
+@pytest.mark.parametrize(
+    "type, category",
+    [
+        ("vanilla", "release"),
+        ("vanilla", "snapshot"),
+        ("modded", "banner"),
+        ("modded", "fabric"),
+        ("modded", "mohist"),
+    ],
+)
+def test_fetch_jar(type, category):
     res = serverjars.fetch_jar(type, category)
-    print(category, "-", res)
-
-
-test("vanilla", "release")
-test("vanilla", "snapshot")
-test("modded", "banner")
-test("modded", "fabric")
-test("modded", "mohist")
+    assert res.status_code is 200

@@ -1,4 +1,6 @@
 import serverjars
 
-types = serverjars.fetch_all_types()
-print(types)
+
+def test_fetch_all():
+    types = serverjars.fetch_all_types()
+    assert isinstance(types, dict)

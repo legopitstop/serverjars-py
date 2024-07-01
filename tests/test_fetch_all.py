@@ -1,15 +1,17 @@
 import serverjars
+import pytest
 
 
-def test(type, category):
+@pytest.mark.parametrize(
+    "type, category",
+    [
+        ("vanilla", "release"),
+        ("vanilla", "snapshot"),
+        ("modded", "banner"),
+        ("modded", "fabric"),
+        ("modded", "mohist"),
+    ],
+)
+def test_fetch_all(type, category):
     all = serverjars.fetch_all(type=type, category=category, max=3)
-    print(category)
-    for jar in all:
-        print("-", jar.version)
-
-
-test("vanilla", "release")
-test("vanilla", "snapshot")
-test("modded", "banner")
-test("modded", "fabric")
-test("modded", "mohist")
+    assert isinstance(all, list)
