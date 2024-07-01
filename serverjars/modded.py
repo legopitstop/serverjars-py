@@ -4,7 +4,8 @@ import requests
 
 from . import register, InvalidRequest, SoftwareBuilder
 
-__all__ = ['MohistAPIService', 'BannerService', 'FabricService', 'MohistService']
+__all__ = ["MohistAPIService", "BannerService", "FabricService", "MohistService"]
+
 
 class MohistAPIService:
     def __init__(self, project: str):

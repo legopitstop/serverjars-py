@@ -8,7 +8,20 @@ import threading
 import requests
 import os
 
-__all__ = ['__version__', 'register', 'SoftwareFileSize', 'SoftwareFile', 'SoftwareBuilder', 'download_jar', 'fetch_all_types', 'fetch_all', 'fetch_details', 'fetch_jar', 'fetch_latest', 'fetch_types']
+__all__ = [
+    "__version__",
+    "register",
+    "SoftwareFileSize",
+    "SoftwareFile",
+    "SoftwareBuilder",
+    "download_jar",
+    "fetch_all_types",
+    "fetch_all",
+    "fetch_details",
+    "fetch_jar",
+    "fetch_latest",
+    "fetch_types",
+]
 __version__ = "1.4.0"
 
 

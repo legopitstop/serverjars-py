@@ -3,7 +3,8 @@ import requests
 
 from . import register, InvalidRequest, SoftwareBuilder
 
-__all__ = ['get_manifest', 'MinecraftServiceBase', 'ReleaseService', 'SnapshotService']
+__all__ = ["get_manifest", "MinecraftServiceBase", "ReleaseService", "SnapshotService"]
+
 
 def get_manifest() -> dict:
     res = requests.get("https://launchermeta.mojang.com/mc/game/version_manifest.json")
