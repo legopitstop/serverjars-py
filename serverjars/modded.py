@@ -1,10 +1,11 @@
 from typing import Any, Dict, List
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import hashlib
 import requests
 
 from .exception import InvalidRequest
-from .software import register, SoftwareBuilder
+from .software import MAX_FETCH_WORKERS, register, SoftwareBuilder
 
 __all__ = ["MohistAPIService", "BannerService", "FabricService", "MohistService"]
 
@@ -13,28 +14,34 @@ class MohistAPIService:
     def __init__(self, project: str):
         self.project = project
 
-    def available_versions(self) -> List[str]:
-        res = requests.get(f"https://mohistmc.com/api/v2/projects/{self.project}")
-        if res.status_code == 200:
-            data = res.json()
-            data["versions"].reverse()
-            return data["versions"]
-        raise InvalidRequest(res.text)
-
-    def get_meta(self, version) -> Dict[str, Any]:
-        meta = {}
+    def _builds(self, version: str) -> List[Dict[str, Any]]:
         res = requests.get(
             f"https://mohistmc.com/api/v2/projects/{self.project}/{version}/builds"
         )
         if res.status_code == 200:
-            data = res.json()
-            latest_build = data["builds"][-1]
-            meta["build"] = latest_build["number"]
-            meta["hash"] = latest_build["fileMd5"]
-            meta["origin"] = latest_build["url"]
-            meta["created_at"] = latest_build["createdAt"]
-            return meta
+            return res.json()["builds"]
         raise InvalidRequest(res.text)
+
+    def available_versions(self) -> List[str]:
+        res = requests.get(f"https://mohistmc.com/api/v2/projects/{self.project}")
+        if res.status_code != 200:
+            raise InvalidRequest(res.text)
+        versions = list(reversed(res.json()["versions"]))
+        with ThreadPoolExecutor(max_workers=MAX_FETCH_WORKERS) as pool:
+            has_builds = list(pool.map(lambda v: bool(self._builds(v)), versions))
+        return [v for v, ok in zip(versions, has_builds) if ok]
+
+    def get_meta(self, version) -> Dict[str, Any]:
+        builds = self._builds(version)
+        if not builds:
+            raise InvalidRequest(f"No builds for {self.project} {version}")
+        latest_build = builds[-1]
+        return {
+            "build": latest_build["gitSha"],
+            "hash": latest_build["fileMd5"],
+            "origin": latest_build["url"],
+            "created_at": latest_build["createdAt"],
+        }
 
 
 @register
@@ -54,16 +61,16 @@ class BannerService(SoftwareBuilder):
     def get_meta(self, version: str) -> Dict[str, Any]:
         return self.api.get_meta(version)
 
-    def get_hash(self, version: str) -> str:
-        return self.get_meta(version)["hash"]
+    def get_hash(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["hash"]
 
-    def get_built(self, version: str) -> datetime:
-        return self.get_meta(version)["created_at"]
+    def get_built(self, version: str, meta: Dict[str, Any]) -> datetime:
+        return meta["created_at"]
 
-    def get_download(self, version: str) -> str:
-        return self.get_meta(version)["origin"]
+    def get_download(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["origin"]
 
-    def get_stability(self, version: str) -> str:
+    def get_stability(self, version: str, meta: Dict[str, Any]) -> str:
         return "unknown"
 
 
@@ -102,14 +109,14 @@ class FabricService(SoftwareBuilder):
         raise InvalidRequest(res.text)
 
     def get_meta(self, version: str) -> Dict[str, Any]:
-        meta = {}
-        meta["installer"] = self.get_latest_installer()["version"]
-        meta["loader"] = self.get_latest_loader()["version"]
-        meta["loader_build"] = self.get_latest_loader()["build"]
-        return meta
+        loader = self.get_latest_loader()
+        return {
+            "installer": self.get_latest_installer()["version"],
+            "loader": loader["version"],
+            "loader_build": loader["build"],
+        }
 
-    def get_hash(self, version: str) -> str:
-        meta = self.get_meta(version)
+    def get_hash(self, version: str, meta: Dict[str, Any]) -> str:
         if "loader" not in meta or "installer" not in meta:
             return ""
         else:
@@ -122,16 +129,15 @@ class FabricService(SoftwareBuilder):
                 return str(hashlib.sha256(res.content))
             raise InvalidRequest(res.text)
 
-    def get_download(self, version: str) -> str:
-        meta = self.get_meta(version)
+    def get_download(self, version: str, meta: Dict[str, Any]) -> str:
         loader = meta["loader"]
         installer = meta["installer"]
         return f"https://meta.fabricmc.net/v2/versions/loader/{ version }/{ loader }/{ installer }/server/jar"
 
-    def get_stability(self, version: str) -> str:
+    def get_stability(self, version: str, meta: Dict[str, Any]) -> str:
         return "stable"
 
-    def get_built(self, version: str) -> datetime:
+    def get_built(self, version: str, meta: Dict[str, Any]) -> datetime:
         return datetime.now()
 
 
@@ -158,14 +164,14 @@ class MohistService(SoftwareBuilder):
     def get_meta(self, version: str) -> Dict[str, Any]:
         return self.api.get_meta(version)
 
-    def get_hash(self, version: str) -> str:
-        return self.get_meta(version)["hash"]
+    def get_hash(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["hash"]
 
-    def get_built(self, version: str) -> datetime:
-        return self.get_meta(version)["created_at"]
+    def get_built(self, version: str, meta: Dict[str, Any]) -> datetime:
+        return meta["created_at"]
 
-    def get_download(self, version: str) -> str:
-        return self.get_meta(version)["origin"]
+    def get_download(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["origin"]
 
-    def get_stability(self, version: str) -> str:
+    def get_stability(self, version: str, meta: Dict[str, Any]) -> str:
         return "unknown"

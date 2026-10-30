@@ -4,8 +4,11 @@ from datetime import datetime
 import requests
 import threading
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 from .exception import InvalidRequest, JarNotFoundError
+
+MAX_FETCH_WORKERS = 8
 
 __all__ = [
     "register",
@@ -75,37 +78,37 @@ class SoftwareBuilder:
     def get_meta(self, version: str) -> Dict[str, Any]:
         raise NotImplementedError()
 
-    def get_hash(self, version: str) -> str:
+    def get_hash(self, version: str, meta: Dict[str, Any]) -> str:
         raise NotImplementedError()
 
-    def get_download(self, version: str) -> str:
+    def get_download(self, version: str, meta: Dict[str, Any]) -> str:
         raise NotImplementedError()
 
-    def get_built(self, version: str) -> datetime:
+    def get_built(self, version: str, meta: Dict[str, Any]) -> datetime:
         raise NotImplementedError()
 
-    def get_stability(self, version: str) -> str:
+    def get_stability(self, version: str, meta: Dict[str, Any]) -> str:
         raise NotImplementedError()
 
     def build(self, version: str) -> SoftwareFile:
         version = self.get_version(version)
-        hash = self.get_hash(version)
-        if not hash:
-            raise Exception(f"Failed to find hash for version {version}")
-        download = self.get_download(version)
-        if not download:
-            raise Exception(f"Failed to find download for version {version}")
-        bytes = int(requests.head(download).headers.get("Content-length", 0))
         meta = self.get_meta(version)
         if not meta:
             raise Exception(f"Failed to find meta for version {version}")
+        hash = self.get_hash(version, meta)
+        if not hash:
+            raise Exception(f"Failed to find hash for version {version}")
+        download = self.get_download(version, meta)
+        if not download:
+            raise Exception(f"Failed to find download for version {version}")
+        bytes = int(requests.head(download).headers.get("Content-length", 0))
         return SoftwareFile(
             version=version,
-            stability=self.get_stability(version),
+            stability=self.get_stability(version, meta),
             hash=hash,
             meta=meta,
             download=download,
-            built=self.get_built(version),
+            built=self.get_built(version, meta),
             size=SoftwareFileSize(
                 bytes=bytes,
                 display="%.2f MiB" % (bytes / 1024.0 / 1024.0),
@@ -194,10 +197,15 @@ def fetch_all(type: str, category: str, max: int) -> List[SoftwareFile]:
         raise JarNotFoundError(type)
     for c in res:
         if c.category == category:
-            return [
-                fetch_details(type, category, version)
-                for version in c.available_versions()[:max]
-            ]
+            versions = c.available_versions()[:max]
+            if not versions:
+                return []
+            with ThreadPoolExecutor(
+                max_workers=min(MAX_FETCH_WORKERS, len(versions))
+            ) as pool:
+                return list(
+                    pool.map(lambda v: fetch_details(type, category, v), versions)
+                )
     raise JarNotFoundError(type)
 
 

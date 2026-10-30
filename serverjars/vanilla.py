@@ -1,11 +1,17 @@
 from typing import Any, Dict, List
 from datetime import datetime
+import threading
+import time
 import requests
 
 from .exception import InvalidRequest
 from .software import register, SoftwareBuilder
 
 __all__ = ["get_manifest", "MinecraftServiceBase", "ReleaseService", "SnapshotService"]
+
+_MANIFEST_TTL = 60.0
+_manifest_lock = threading.Lock()
+_manifest_cache: Dict[str, Any] = {}
 
 
 def get_manifest() -> Dict[str, Any]:
@@ -15,9 +21,17 @@ def get_manifest() -> Dict[str, Any]:
     raise InvalidRequest(res.text)
 
 
+def _cached_manifest() -> Dict[str, Any]:
+    with _manifest_lock:
+        now = time.monotonic()
+        if not _manifest_cache or now - _manifest_cache["at"] > _MANIFEST_TTL:
+            _manifest_cache.update(at=now, data=get_manifest())
+        return _manifest_cache["data"]
+
+
 def _release_versions() -> Dict[str, str]:
     data = {}
-    versions = [x for x in get_manifest()["versions"] if x["type"] == "release"]
+    versions = [x for x in _cached_manifest()["versions"] if x["type"] == "release"]
     for v in versions:
         data[v["id"]] = v["url"]
     return data
@@ -25,7 +39,7 @@ def _release_versions() -> Dict[str, str]:
 
 def _versions() -> Dict[str, str]:
     data = {}
-    for v in get_manifest()["versions"]:
+    for v in _cached_manifest()["versions"]:
         data[v["id"]] = v["url"]
     return data
 
@@ -46,7 +60,7 @@ class MinecraftServiceBase(SoftwareBuilder):
     def get_meta(self, version: str) -> Dict[str, Any]:
         meta = {"hash": None, "origin": None, "stability": None, "created": None}
         if version == "latest":
-            manifest_url = _versions()[get_manifest()["latest"]["release"]]
+            manifest_url = _versions()[_cached_manifest()["latest"]["release"]]
         else:
             manifest_url = _versions()[version]
         res = requests.get(manifest_url)
@@ -60,17 +74,17 @@ class MinecraftServiceBase(SoftwareBuilder):
             return meta
         raise InvalidRequest(res.text)
 
-    def get_hash(self, version: str) -> str:
-        return self.get_meta(version)["hash"]
+    def get_hash(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["hash"]
 
-    def get_built(self, version: str) -> datetime:
-        return self.get_meta(version)["created_at"]
+    def get_built(self, version: str, meta: Dict[str, Any]) -> datetime:
+        return meta["created_at"]
 
-    def get_download(self, version: str) -> str:
-        return self.get_meta(version)["origin"]
+    def get_download(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["origin"]
 
-    def get_stability(self, version: str) -> str:
-        return self.get_meta(version)["stability"]
+    def get_stability(self, version: str, meta: Dict[str, Any]) -> str:
+        return meta["stability"]
 
 
 @register
